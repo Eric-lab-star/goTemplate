@@ -1,13 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
-
-	"github.com/go-chi/chi"
 )
 
 func main() {
-	r := chi.NewRouter()
+	http.HandleFunc("/", home)
+	http.ListenAndServe("localhost:5000", nil)
+}
 
-	http.ListenAndServe("localhost:5000", r)
+func home(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "home")
 }
