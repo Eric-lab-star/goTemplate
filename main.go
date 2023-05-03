@@ -1,15 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"os"
+	"text/template"
 )
 
-func main() {
-	http.HandleFunc("/", home)
-	http.ListenAndServe("localhost:5000", nil)
+type Invetory struct {
+	Material string
+	count    uint
 }
 
-func home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "home")
+func main() {
+	sweater := Invetory{"wool", 12}
+	tmpl, err := template.New("trivial").Parse("{{.count}} items are made of {{.Material}}")
+	if err != nil {
+		panic(err)
+	}
+	err = tmpl.Execute(os.Stdout, sweater)
 }
