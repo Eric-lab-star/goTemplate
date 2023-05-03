@@ -7,14 +7,20 @@ import (
 
 type Invetory struct {
 	Material string
-	count    uint
+	Count    uint
 }
 
+func (i *Invetory) Shout(name string) string {
+	return name + "is made by master kim"
+}
 func main() {
-	sweater := Invetory{"wool", 12}
-	tmpl, err := template.New("trivial").Parse("{{.count}} items are made of {{.Material}}")
+	lists := []int{1, 2, 3, 4}
+	tmpl, err := template.New("trivial").Parse("{{range $elem := .}} {{$elem}} {{end}}")
 	if err != nil {
 		panic(err)
 	}
-	err = tmpl.Execute(os.Stdout, sweater)
+	err = tmpl.Execute(os.Stdout, lists)
+	if err != nil {
+		panic(err)
+	}
 }
