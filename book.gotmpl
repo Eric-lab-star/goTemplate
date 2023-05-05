@@ -1,0 +1,15 @@
+{{define "book"}}
+{{range $book := .}}
+<div id="book">
+  <div id="title">{{$book.Title}}</div>
+  <div>{{$book.Review}}</div>
+  <span id="count">Page Count: {{$book.PageCount}}</span>
+  <div id="category">
+    {{range $category := $book.Categories}}
+    <div>- {{$category}}</div>
+    {{end}}
+  </div>
+</div>
+{{end}}
+{{end}}
+

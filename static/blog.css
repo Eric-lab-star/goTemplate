@@ -1,6 +1,38 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
 #book {
+  display: flex;
+  flex-direction: column;
   width: 400px;
   border: 1px solid black;
   padding: 2px;
   border-radius: 20px;
+  margin: 10px 0px;
+  padding: 10px 20px;
+}
+#book > #title {
+  font-size: large;
+  font-weight: 500;
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
+
+#book > #count {
+  padding-top: 10px;
+  font-size: 12px;
+  display: block;
+  text-align: end;
+}
+
+#book > #category {
+  font-size: small;
+  margin-top: 10px;
+  text-transform: uppercase;
 }

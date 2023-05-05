@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -71,16 +70,19 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Get("/", homeHandler(books))
 	fileServer(r, "/static")
-	http.ListenAndServe("localhost:4000", r)
+	http.ListenAndServe("localhost:8000", r)
 }
 
 func homeHandler(data []book) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tmpl, err := template.ParseFiles("blog.html")
+		tmpl, err := template.ParseFiles("blog.gotmpl", "book.gotmpl", "header.gotmpl")
 		if err != nil {
 			panic(err)
 		}
-		tmpl.Execute(w, data)
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -91,7 +93,6 @@ func fileServer(r chi.Router, path string) {
 	}
 	//url의 마지막 글자가 "/"가 아닌경우 "/"를 붙여서 리다이렉트 시킴
 	if path != "/" && path[len(path)-1] != '/' {
-		fmt.Println(path)
 		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
 		path += "/"
 	}
