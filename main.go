@@ -70,13 +70,7 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Get("/", homeHandler(books))
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	filesDir := http.Dir(filepath.Join(wd, "static"))
-	fileServer(r, "/static", filesDir)
-
+	fileServer(r, "/static")
 	http.ListenAndServe("localhost:4000", r)
 }
 
@@ -86,18 +80,31 @@ func homeHandler(data []book) http.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
-
 		tmpl.Execute(w, data)
 	}
-
 }
 
-func fileServer(r chi.Router, path string, filesDir http.FileSystem) {
+func fileServer(r chi.Router, path string) {
+	// url에 {}*가 있는지 확인후 거르기
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit any URL parameters.")
+	}
+	//url의 마지막 글자가 "/"가 아닌경우 "/"를 붙여서 리다이렉트 시킴
+	if path != "/" && path[len(path)-1] != '/' {
+		fmt.Println(path)
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	filesDir := http.Dir(filepath.Join(wd, "static"))
 
-	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+	path += "*"
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
 		rctx := chi.RouteContext(r.Context())
 		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
-		fmt.Println(pathPrefix)
 		fs := http.StripPrefix(pathPrefix, http.FileServer(filesDir))
 		fs.ServeHTTP(w, r)
 	})
